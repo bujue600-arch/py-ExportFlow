@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    name: 体量门禁与仓库工具测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: 安装工具链
+        run: pip install -r tools/dev-requirements.txt
+      - name: Lint（ruff）
+        run: ruff check .
+      - name: 体量门禁
+        run: python scripts/size_gate.py
+      - name: 仓库工具测试
+        run: pytest tests -q
+  # D2 起追加: backend（安装 server/requirements.txt, pytest server/tests）
+  # D3 起追加: frontend（apps/web, npm ci + vitest run）
