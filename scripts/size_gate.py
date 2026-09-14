@@ -31,7 +31,7 @@ FILE_RULES: dict[str, int] = {
 }
 DIR_BUDGETS: dict[str, int] = {
     "server": 2000,
-    "apps/web/src": 4500,
+    "apps/web": 5000,
     "scripts": 600,
     "tests": 800,
 }
