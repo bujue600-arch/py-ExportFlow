@@ -1,0 +1,71 @@
+/* ExportFlow 基础样式：CSS 变量 + 少量通用类（刻意从简，见架构方案 §1） */
+:root {
+  --c-bg: #f6f7f9;
+  --c-card: #ffffff;
+  --c-border: #e3e6ea;
+  --c-text: #1f2329;
+  --c-text-2: #6b7280;
+  --c-primary: #2f6fed;
+  --c-primary-d: #1d4fc4;
+  --c-ok: #16a34a;
+  --c-warn: #d97706;
+  --c-err: #dc2626;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+}
+
+.app-shell { max-width: 1080px; margin: 0 auto; padding: 16px 20px 48px; }
+.app-header { display: flex; align-items: center; gap: 24px; padding: 12px 0 16px; }
+.app-title { font-size: 20px; font-weight: 700; }
+.app-nav { display: flex; gap: 16px; }
+.app-nav a { color: var(--c-text-2); text-decoration: none; padding: 4px 2px; }
+.app-nav a:hover, .app-nav a.active { color: var(--c-primary); border-bottom: 2px solid var(--c-primary); }
+
+.card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+table.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--c-border); }
+.data-table th { color: var(--c-text-2); font-weight: 600; background: #fafbfc; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; line-height: 18px; }
+.badge-gray  { background: #eef0f3; color: var(--c-text-2); }
+.badge-blue  { background: #e5eeff; color: var(--c-primary); }
+.badge-green { background: #e6f7ee; color: var(--c-ok); }
+.badge-red   { background: #fdeaea; color: var(--c-err); }
+
+button.btn {
+  border: 1px solid var(--c-border); background: var(--c-card); color: var(--c-text);
+  border-radius: 6px; padding: 6px 14px; cursor: pointer; font-size: 14px;
+}
+button.btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+button.btn-primary { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+button.btn-primary:hover { background: var(--c-primary-d); color: #fff; }
+button.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+input.field, select.field {
+  border: 1px solid var(--c-border); border-radius: 6px; padding: 6px 8px; font-size: 14px; background: #fff;
+}
+.filter-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+
+.progress { height: 8px; border-radius: 999px; background: #eef0f3; overflow: hidden; }
+.progress > div { height: 100%; background: var(--c-primary); transition: width 0.3s; }
+
+.empty-tip { color: var(--c-text-2); padding: 24px 0; text-align: center; }
+.error-text { color: var(--c-err); }
+.toolbar { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; }
