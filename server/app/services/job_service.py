@@ -106,12 +106,13 @@ def create_job(
             data={"existing_job_id": existing.id},
         )
 
-    # 载荷校验（selection-payload §4）：SELECTED_IDS 非空且 ≤1000；FILTER 必须带筛选
+    # 载荷校验（selection-payload §4）：SELECTED_IDS 非空且 ≤1000；FILTER
+    # 必须包含 filter 字段。空对象表示“当前筛选条件为空”，即全量快照。
     if mode == "SELECTED_IDS":
         if not selected_ids or len(selected_ids) > EXPORT_LIMIT:
             raise AppError(1002, f"显式勾选数量必须在 1~{EXPORT_LIMIT} 之间", http_status=400)
     elif mode == "FILTER":
-        if not filter_payload:
+        if filter_payload is None:
             raise AppError(1002, "FILTER 模式必须携带筛选条件", http_status=400)
     else:
         raise AppError(1002, f"未知导出模式：{mode}", http_status=400)
