@@ -1,0 +1,4 @@
+# ruff 配置（改动需在 PR 说明）
+[lint]
+# B008: FastAPI 的 Depends()/Query() 放参数默认值是官方惯用法，豁免
+ignore = ["B008"]

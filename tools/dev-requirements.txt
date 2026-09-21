@@ -1,0 +1,3 @@
+# 门禁与流水线工具链（改动需在 .rules/RULES-collab.md 登记版本）
+ruff>=0.6
+pytest>=8.0

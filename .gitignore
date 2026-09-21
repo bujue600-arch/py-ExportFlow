@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# 数据与产物（运行期生成，不入库）
+*.sqlite3
+*.db
+exports/
+server/exports/
+
+# 前端
+node_modules/
+dist/
+coverage/
+
+# 编辑器与系统
+.idea/
+.DS_Store
+Thumbs.db
+
+# 环境变量
+.env
+.env.*
