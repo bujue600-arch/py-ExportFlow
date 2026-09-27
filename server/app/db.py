@@ -9,12 +9,14 @@
 
 from __future__ import annotations
 
+import os
 from collections.abc import Generator
 from pathlib import Path
 
 from sqlmodel import Session, SQLModel, create_engine
 
-DB_PATH = Path(__file__).resolve().parents[1] / "exportflow.db"
+# 测试/端到端可经 EXPORTFLOW_DB 覆盖路径（e2e_smoke.py 使用）
+DB_PATH = Path(os.environ.get("EXPORTFLOW_DB") or Path(__file__).resolve().parents[1] / "exportflow.db")
 
 
 def make_engine(db_path: Path):
