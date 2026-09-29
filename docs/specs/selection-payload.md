@@ -1,7 +1,8 @@
 # 契约三：三态选择模型与导出载荷
 
-- **版本**：v1.0（2026-09-14）
+- **版本**：v1.1（2026-09-17）
 - **依赖**：`api-contract.md` §5 创建导出。
+- **变更记录**：v1.1 澄清 FILTER 载荷中 `filter` 可为空对象 `{}`（= 无条件全量快照，对应前端"无筛选时全选"）；字段缺省或为 `null` 仍为非法（1002）。
 
 ## 1. 问题
 
@@ -40,7 +41,7 @@ interface SelectionState {
 | 选择态 | mode | 载荷 |
 |---|---|---|
 | 非全选 | `SELECTED_IDS` | `{ selected_ids: [...explicitIds] }`，长度必须 ≤ 1000（前端防御 + 后端校验 1002） |
-| 全选 | `FILTER` | `{ filter: filterSnapshot, excluded_ids: [...excludedIds] }` |
+| 全选 | `FILTER` | `{ filter: filterSnapshot, excluded_ids: [...excludedIds] }`；`filter` 可为空对象 `{}`（无条件全量快照），缺省或 `null` 为非法 |
 
 - 请求体：`{ mode, selected_ids?, filter?, excluded_ids?, format: "csv" | "json" }` + 头 `Idempotency-Key`。
 - 后端校验：
