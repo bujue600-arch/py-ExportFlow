@@ -40,8 +40,8 @@ def test_demo画像_类型齐全_最近一小时不少于50条(tmp_path) -> None
     with Session(engine) as session:
         total = session.exec(select(func.count()).select_from(Asset)).one()
         types = set(session.exec(select(Asset.asset_type)).all())
-        # SQLite 读回的 created_at 为 naive，阈值同样取 naive UTC
-        threshold = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(hours=1)
+        # sqlmodel 0.0.47 起绑定参数强制 aware：阈值必须带时区
+        threshold = datetime.now(timezone.utc) - timedelta(hours=1)
         recent = session.exec(
             select(func.count()).select_from(Asset).where(Asset.created_at >= threshold)
         ).one()
