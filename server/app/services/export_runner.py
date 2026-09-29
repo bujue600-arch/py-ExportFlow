@@ -4,16 +4,18 @@ from __future__ import annotations
 
 import csv
 import json
+import logging
 from collections.abc import Callable
 from pathlib import Path
-
-from sqlmodel import Session
 
 from app.core.envelope import AppError
 from app.models.asset import Asset
 from app.models.export_job import ExportJob
 from app.repositories import asset_repo
 from app.services import job_service
+from sqlmodel import Session
+
+logger = logging.getLogger("app.export_runner")
 
 EXPORT_DIR = Path(__file__).resolve().parents[2] / "exports"
 BATCH_SIZE = 500
@@ -125,4 +127,5 @@ def execute_export(session: Session, job: ExportJob) -> None:
     except AppError as exc:
         job_service.fail_job(session, job, exc.code, exc.message)
     except Exception as exc:
+        logger.exception("导出执行异常 job=%s", job.id)
         job_service.fail_job(session, job, 3003, f"导出执行异常：{type(exc).__name__}")

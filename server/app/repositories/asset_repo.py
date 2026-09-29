@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from app.models.asset import Asset
 from sqlalchemy import Text, cast, func
 from sqlmodel import Session, select
-
-from app.models.asset import Asset
 
 
 def list_assets(

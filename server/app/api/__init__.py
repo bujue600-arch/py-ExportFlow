@@ -2,8 +2,8 @@
 
 from fastapi import APIRouter
 
-from app.api.events import router as events_router
 from app.api.assets import router as assets_router
+from app.api.events import router as events_router
 from app.api.jobs import router as jobs_router
 from app.api.jobs_download import router as jobs_download_router
 from app.core.envelope import EnvelopeRoute

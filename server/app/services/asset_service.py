@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from app.core.envelope import AppError
 from app.repositories import asset_repo
 from sqlmodel import Session

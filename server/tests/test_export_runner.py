@@ -3,8 +3,7 @@ import json
 
 from app.models.asset import Asset
 from app.models.export_job import JOB_DONE, JOB_FAILED
-from app.services import job_service
-from app.services.export_runner import EXPORT_DIR, execute_export
+from app.services.export_runner import execute_export
 from app.services.queue_worker import run_once
 
 
@@ -27,7 +26,6 @@ def test_selected_ids_export_writes_csv(client, db_session, monkeypatch, tmp_pat
     assert run_once(db_session) is True
 
     # Assert
-    job = db_session.get(type(job_service.get_job), job_id) if False else None
     detail = client.get(f"/api/export-jobs/{job_id}").json()["data"]
     assert detail["status"] == JOB_DONE
     with (tmp_path / detail["file"]["name"]).open(encoding="utf-8-sig", newline="") as handle:

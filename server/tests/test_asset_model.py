@@ -1,6 +1,5 @@
-from sqlmodel import select
-
 from app.models.asset import Asset
+from sqlmodel import select
 
 
 def test_asset_model_insert_and_filter_by_type(db_session) -> None:
