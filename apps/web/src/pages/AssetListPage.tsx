@@ -1,20 +1,42 @@
 import { useState } from "react";
+import { ApiError } from "../api/client";
 import AssetTable from "../features/assets/components/AssetTable";
 import FilterForm from "../features/assets/components/FilterForm";
-import { defaultFilter } from "../features/assets/lib/filter";
-import { mockAssets } from "../features/assets/mock";
+import { useAssetList } from "../features/assets/hooks/useAssetList";
+import { useCommittedFilter } from "../features/assets/hooks/useCommittedFilter";
 
-/** D2 静态列表：提交仅打印草稿条件，后续任务再接入真实查询。 */
+const PAGE_SIZE = 20;
+
 export default function AssetListPage() {
-  const [draft, setDraft] = useState(defaultFilter);
+  const [page, setPage] = useState(1);
+  const { draft, committed, setDraft, submit } = useCommittedFilter();
+  const { data, error, isPending, isFetching } = useAssetList(page, PAGE_SIZE, committed);
+  const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / PAGE_SIZE));
+
+  function handleSubmit() {
+    setPage(1);
+    submit();
+  }
 
   return (
     <section>
       <h1>作品库</h1>
       <div className="card">
-        <FilterForm value={draft} onChange={setDraft} onSubmit={() => console.log(draft)} />
-        <p className="asset-list-summary">共 {mockAssets.length} 个作品</p>
-        <AssetTable assets={mockAssets} />
+        <FilterForm value={draft} onChange={setDraft} onSubmit={handleSubmit} />
+        {isPending && <p role="status" className="empty-tip">加载中…</p>}
+        {error && <p role="alert" className="error-text">
+          {error instanceof ApiError ? error.toUserMessage() : `操作失败：${error.message}`}
+        </p>}
+        {data && !error && <>
+          <AssetTable assets={data.items} />
+          <nav className="toolbar" aria-label="作品分页">
+            <button className="btn" type="button" disabled={page <= 1 || isFetching}
+              onClick={() => setPage((current) => current - 1)}>上一页</button>
+            <span role="status">第 {data.page} / {totalPages} 页 · 共 {data.total} 条</span>
+            <button className="btn" type="button" disabled={page >= totalPages || isFetching}
+              onClick={() => setPage((current) => current + 1)}>下一页</button>
+          </nav>
+        </>}
       </div>
     </section>
   );
