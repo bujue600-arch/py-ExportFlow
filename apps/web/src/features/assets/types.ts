@@ -10,3 +10,10 @@ export interface Asset {
   size_bytes: number;
   created_at: string;
 }
+
+export interface AssetListResponse {
+  items: Asset[];
+  total: number;
+  page: number;
+  page_size: number;
+}
