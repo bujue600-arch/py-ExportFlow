@@ -69,3 +69,14 @@ input.field, select.field {
 .empty-tip { color: var(--c-text-2); padding: 24px 0; text-align: center; }
 .error-text { color: var(--c-err); }
 .toolbar { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; }
+
+.asset-filter { align-items: flex-end; gap: 14px; }
+.asset-filter label { display: flex; flex-direction: column; gap: 6px; color: var(--c-text-2); }
+.asset-filter .field { width: 100%; min-width: 100px; color: var(--c-text); }
+.asset-filter input[type="search"], .asset-filter input:not([type]) { max-width: 180px; }
+.asset-filter-actions { display: flex; gap: 8px; }
+.asset-list-summary { color: var(--c-text-2); margin: 20px 0 10px; }
+.asset-table-scroll { overflow-x: auto; }
+.asset-table-scroll table { min-width: 720px; }
+.asset-nowrap { white-space: nowrap; }
+.field:focus-visible, .btn:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
