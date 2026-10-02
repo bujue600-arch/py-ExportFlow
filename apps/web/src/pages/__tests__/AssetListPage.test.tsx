@@ -29,6 +29,41 @@ function mockList() {
 describe("AssetListPage 真实查询", () => {
   beforeEach(() => { vi.mocked(request).mockReset(); });
 
+  it("test_选择作品_单行和本页全选_父级同步勾选且提交筛选清空", async () => {
+    vi.mocked(request).mockResolvedValue({ items: structuredClone(mockAssets),
+      total: 12, page: 1, page_size: 20 });
+    renderPage();
+    const row = await screen.findByRole("checkbox", { name: "选择作品：城市晨光" });
+    const header = screen.getByRole("checkbox", { name: "选择本页全部作品" });
+
+    fireEvent.click(row);
+
+    expect(row).toBeChecked();
+    expect(header).toBePartiallyChecked();
+
+    fireEvent.click(header);
+
+    expect(screen.getAllByRole("checkbox").every((checkbox) =>
+      (checkbox as HTMLInputElement).checked)).toBe(true);
+    expect(header).not.toBePartiallyChecked();
+
+    fireEvent.click(header);
+
+    expect(screen.getAllByRole("checkbox").every((checkbox) =>
+      !(checkbox as HTMLInputElement).checked)).toBe(true);
+
+    fireEvent.click(row);
+    fireEvent.change(screen.getByLabelText("关键词"), { target: { value: "城市" } });
+
+    expect(row).toBeChecked();
+    expect(request).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "查询" }));
+
+    expect(await screen.findByRole("checkbox", { name: "选择作品：城市晨光" })).not.toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "选择本页全部作品" })).not.toBePartiallyChecked();
+  });
+
   it("test_打开列表_请求未完成_显示加载提示", () => {
     vi.mocked(request).mockReturnValue(new Promise(() => {}));
 

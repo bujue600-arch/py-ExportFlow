@@ -79,6 +79,7 @@ input.field, select.field {
 .asset-table-scroll { overflow-x: auto; }
 .asset-table-scroll table { min-width: 720px; }
 .asset-nowrap { white-space: nowrap; }
+.data-table tbody tr[data-selected="true"] { background: #eef4ff; }
 .field:focus-visible, .btn:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
 
 .job-list { display: grid; gap: 16px; }
