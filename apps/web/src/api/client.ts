@@ -51,11 +51,11 @@ function fallbackError(status: number, traceId: string): ApiError {
   return new ApiError(status >= 500 ? 5000 : 1001, `请求失败（${status}）`, traceId);
 }
 
-/** JSON 请求：成功返回 data 本体；任何失败抛 ApiError。 */
-export async function request<T>(
+/** JSON 请求：保留成功信封的 data 与 trace_id；信封或 HTTP 失败抛 ApiError。 */
+export async function requestWithTrace<T>(
   path: string,
   init?: RequestInit & { idempotencyKey?: string },
-): Promise<T> {
+): Promise<{ data: T; traceId: string }> {
   const headers = new Headers(init?.headers);
   if (init?.body != null && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
@@ -75,7 +75,15 @@ export async function request<T>(
   if (!res.ok || body.code !== 0) {
     throw new ApiError(body.code, body.message, body.trace_id);
   }
-  return body.data as T;
+  return { data: body.data as T, traceId: body.trace_id };
+}
+
+/** 默认调用仍只返回 data；需要排障上下文的页面可用 requestWithTrace。 */
+export async function request<T>(
+  path: string,
+  init?: RequestInit & { idempotencyKey?: string },
+): Promise<T> {
+  return (await requestWithTrace<T>(path, init)).data;
 }
 
 /**
