@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { MemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ApiError, request } from "../../api/client";
 import { mockAssets } from "../../features/assets/mock";
@@ -10,7 +11,9 @@ vi.mock("../../api/client", async (importOriginal) => ({
 
 function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
-  return render(<QueryClientProvider client={client}><AssetListPage /></QueryClientProvider>);
+  return render(<QueryClientProvider client={client}>
+    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><AssetListPage /></MemoryRouter>
+  </QueryClientProvider>);
 }
 
 function mockList() {
