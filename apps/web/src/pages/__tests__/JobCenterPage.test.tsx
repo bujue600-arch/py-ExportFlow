@@ -25,9 +25,10 @@ describe("JobCenterPage", () => {
     renderPage();
 
     expect(await screen.findByText("已完成")).toBeInTheDocument();
+    expect(screen.getByTestId("sse-phase")).toHaveTextContent("轮询降级");
     expect(screen.getByRole("button", { name: "下载" })).toBeInTheDocument();
-    expect(screen.getByRole("status")).toHaveTextContent("第 1 / 2 页 · 共 11 条");
-    expect(requestWithTrace).toHaveBeenCalledWith("/api/export-jobs?page=1&page_size=10", { signal: expect.any(AbortSignal) });
+    expect(screen.getByRole("status")).toHaveTextContent("第 1 / 1 页 · 共 11 条");
+    expect(requestWithTrace).toHaveBeenCalledWith("/api/export-jobs?page=1&page_size=20", { signal: expect.any(AbortSignal) });
   });
 
   it("test_获取任务_统一错误_显示trace_id", async () => {

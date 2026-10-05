@@ -23,7 +23,7 @@ describe("JobCard", () => {
   });
 
   it("test_运行任务_显示进度条_按处理数计算百分比", () => {
-    render(<JobCard job={{ ...baseJob, status: "RUNNING", processed_count: 3 }} />);
+    render(<JobCard job={{ ...baseJob, status: "RUNNING", processed_count: 3, progress: 30 }} />);
 
     expect(screen.getByText("导出中")).toHaveClass("badge-blue");
     expect(screen.getByRole("progressbar")).toHaveValue(30);

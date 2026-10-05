@@ -15,8 +15,7 @@ function JobTime({ value }: { value: string | null }) {
 export default function JobCard({ job, traceId }: { job: ExportJob; traceId?: string }) {
   const [downloading, setDownloading] = useState(false);
   const [downloadError, setDownloadError] = useState("");
-  const progress = job.total_count > 0
-    ? Math.min(100, Math.max(0, job.processed_count / job.total_count * 100)) : 0;
+  const progress = Math.min(100, Math.max(0, job.progress));
 
   async function handleDownload() {
     if (!job.file || downloading) return;

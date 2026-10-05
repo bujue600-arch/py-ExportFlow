@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ApiError, request } from "../../api/client";
 import { mockAssets } from "../../features/assets/mock";
@@ -12,7 +12,12 @@ vi.mock("../../api/client", async (importOriginal) => ({
 function renderPage() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
   return render(<QueryClientProvider client={client}>
-    <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}><AssetListPage /></MemoryRouter>
+    <MemoryRouter initialEntries={["/"]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <Routes>
+        <Route path="/" element={<AssetListPage />} />
+        <Route path="/jobs" element={<p data-testid="jobs-route">jobs</p>} />
+      </Routes>
+    </MemoryRouter>
   </QueryClientProvider>);
 }
 
@@ -29,6 +34,23 @@ function mockList() {
 describe("AssetListPage 真实查询", () => {
   beforeEach(() => { vi.mocked(request).mockReset(); });
 
+  it("test_选择作品_导出JSON_提交选择载荷并跳转导出中心", async () => {
+    vi.mocked(request)
+      .mockResolvedValueOnce({ items: [mockAssets[0]], total: 1, page: 1, page_size: 20 })
+      .mockResolvedValueOnce({ id: "job_new", status: "QUEUED", job_version: 1 });
+    renderPage();
+
+    fireEvent.click(await screen.findByRole("checkbox", { name: "选择作品：城市晨光" }));
+    fireEvent.click(screen.getByRole("button", { name: "导出 JSON" }));
+
+    expect(await screen.findByTestId("jobs-route")).toBeInTheDocument();
+    expect(vi.mocked(request)).toHaveBeenLastCalledWith("/api/export-jobs", {
+      method: "POST",
+      body: JSON.stringify({ mode: "SELECTED_IDS", selected_ids: ["asset_01"], format: "json" }),
+      idempotencyKey: expect.any(String),
+    });
+  });
+
   it("test_选择作品_单行和本页全选_父级同步勾选且提交筛选清空", async () => {
     vi.mocked(request).mockResolvedValue({ items: structuredClone(mockAssets),
       total: 12, page: 1, page_size: 20 });
@@ -43,13 +65,15 @@ describe("AssetListPage 真实查询", () => {
 
     fireEvent.click(header);
 
-    expect(screen.getAllByRole("checkbox").every((checkbox) =>
+    expect(screen.getAllByRole("row").slice(1).flatMap((row) =>
+      Array.from(row.querySelectorAll<HTMLInputElement>("input[type=checkbox]"))).every((checkbox) =>
       (checkbox as HTMLInputElement).checked)).toBe(true);
     expect(header).not.toBePartiallyChecked();
 
     fireEvent.click(header);
 
-    expect(screen.getAllByRole("checkbox").every((checkbox) =>
+    expect(screen.getAllByRole("row").slice(1).flatMap((row) =>
+      Array.from(row.querySelectorAll<HTMLInputElement>("input[type=checkbox]"))).every((checkbox) =>
       !(checkbox as HTMLInputElement).checked)).toBe(true);
 
     fireEvent.click(row);

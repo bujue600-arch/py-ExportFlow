@@ -32,7 +32,5 @@ export function useJobs(params: UseJobsParams) {
     },
     retry: false,
     refetchOnWindowFocus: false,
-    // TODO(D6): 页面接入 A 的 useJobUpdates 后移除固定轮询，避免双重刷新。
-    refetchInterval: 10_000,
   });
 }

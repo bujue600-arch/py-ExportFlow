@@ -2,17 +2,22 @@ import { useState } from "react";
 import { ApiError } from "../api/client";
 import JobCard from "../features/jobs/components/JobCard";
 import { useJobs } from "../features/jobs/hooks/useJobs";
+import { SSE_PHASE_TEXT, useJobUpdates } from "../features/jobs/hooks/useJobUpdates";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export default function JobCenterPage() {
   const [page, setPage] = useState(1);
+  const phase = useJobUpdates();
   const { data, error, isPending, isFetching } = useJobs({ page, pageSize: PAGE_SIZE });
   const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / PAGE_SIZE));
 
   return (
     <section>
-      <h1>导出中心</h1>
+      <div className="toolbar">
+        <h1>导出中心</h1>
+        <span className="badge badge-blue" data-testid="sse-phase">{SSE_PHASE_TEXT[phase]}</span>
+      </div>
       {isPending && <p role="status" className="empty-tip">加载中…</p>}
       {error && <p role="alert" className="error-text">
         {error instanceof ApiError ? error.toUserMessage() : `操作失败：${error.message}`}
