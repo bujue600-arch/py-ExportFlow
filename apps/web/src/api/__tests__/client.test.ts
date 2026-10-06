@@ -1,6 +1,6 @@
 /** 统一请求层测试：成功解包 / 业务错误 / HTTP 错误 / 坏形状兜底 / 二进制错误体。 */
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ApiError, request, requestBlob } from "../client";
+import { ApiError, request, requestBlob, requestWithTrace } from "../client";
 
 const okEnvelope = (data: unknown) => ({
   code: 0, message: "ok", data, trace_id: "t-1",
@@ -18,6 +18,13 @@ afterEach(() => {
 });
 
 describe("request", () => {
+  it("test_元数据请求_成功信封_保留响应追踪号", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(200, okEnvelope({ items: [] }))));
+
+    const result = await requestWithTrace("/api/export-jobs");
+
+    expect(result).toEqual({ data: { items: [] }, traceId: "t-1" });
+  });
   it("成功_解包_data本体", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(200, okEnvelope({ items: [1, 2] }))));
 

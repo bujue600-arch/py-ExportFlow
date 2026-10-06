@@ -80,3 +80,13 @@ input.field, select.field {
 .asset-table-scroll table { min-width: 720px; }
 .asset-nowrap { white-space: nowrap; }
 .field:focus-visible, .btn:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
+
+.job-list { display: grid; gap: 16px; }
+.job-card { overflow-wrap: anywhere; }
+.job-card-header, .job-download { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.job-card h2 { font-size: 16px; margin: 0; }
+.job-meta, .job-times { color: var(--c-text-2); }
+.job-times { display: flex; gap: 12px 32px; flex-wrap: wrap; }
+.job-times div { display: flex; gap: 8px; }
+.job-times dd { margin: 0; }
+.job-progress { width: 100%; height: 12px; accent-color: var(--c-primary); }

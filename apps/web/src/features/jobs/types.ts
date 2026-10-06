@@ -29,6 +29,9 @@ export interface JobDto {
   error: JobError | null;
 }
 
+/** 与既有 SSE 使用的 JobDto 共用同一契约。 */
+export type ExportJob = JobDto;
+
 export interface JobsPageData {
   items: JobDto[];
   total: number;

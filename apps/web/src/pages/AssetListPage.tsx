@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ApiError } from "../api/client";
 import AssetTable from "../features/assets/components/AssetTable";
 import FilterForm from "../features/assets/components/FilterForm";
@@ -20,7 +21,7 @@ export default function AssetListPage() {
 
   return (
     <section>
-      <h1>作品库</h1>
+      <div className="toolbar"><h1>作品库</h1><Link to="/jobs">导出中心</Link></div>
       <div className="card">
         <FilterForm value={draft} onChange={setDraft} onSubmit={handleSubmit} />
         {isPending && <p role="status" className="empty-tip">加载中…</p>}
