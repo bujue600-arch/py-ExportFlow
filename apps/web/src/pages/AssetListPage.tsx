@@ -5,17 +5,20 @@ import AssetTable from "../features/assets/components/AssetTable";
 import FilterForm from "../features/assets/components/FilterForm";
 import { useAssetList } from "../features/assets/hooks/useAssetList";
 import { useCommittedFilter } from "../features/assets/hooks/useCommittedFilter";
+import { emptySelection, toggleRow } from "../features/assets/lib/selection";
 
 const PAGE_SIZE = 20;
 
 export default function AssetListPage() {
   const [page, setPage] = useState(1);
+  const [selection, setSelection] = useState(emptySelection);
   const { draft, committed, setDraft, submit } = useCommittedFilter();
   const { data, error, isPending, isFetching } = useAssetList(page, PAGE_SIZE, committed);
   const totalPages = Math.max(1, Math.ceil((data?.total ?? 0) / PAGE_SIZE));
 
   function handleSubmit() {
     setPage(1);
+    setSelection(emptySelection());
     submit();
   }
 
@@ -29,7 +32,8 @@ export default function AssetListPage() {
           {error instanceof ApiError ? error.toUserMessage() : `操作失败：${error.message}`}
         </p>}
         {data && !error && <>
-          <AssetTable assets={data.items} />
+          <AssetTable assets={data.items} selectedIds={selection.explicitIds}
+            onToggleRow={(id) => setSelection((current) => toggleRow(current, id))} />
           <nav className="toolbar" aria-label="作品分页">
             <button className="btn" type="button" disabled={page <= 1 || isFetching}
               onClick={() => setPage((current) => current - 1)}>上一页</button>
