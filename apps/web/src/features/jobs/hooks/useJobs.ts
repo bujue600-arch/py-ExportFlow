@@ -1,7 +1,7 @@
 /** 任务数据 hook（C 的导出中心页消费；A 提供 SSE/轮询统一策略）。 */
 
 import { useQuery } from "@tanstack/react-query";
-import { request } from "@/api/client";
+import { requestWithTrace } from "../../../api/client";
 import { jobsKeys } from "../keys";
 import type { JobsPageData } from "../types";
 
@@ -24,6 +24,13 @@ function toQueryString(params: UseJobsParams): string {
 export function useJobs(params: UseJobsParams) {
   return useQuery({
     queryKey: jobsKeys.list(params),
-    queryFn: () => request<JobsPageData>(`/api/export-jobs?${toQueryString(params)}`),
+    queryFn: async ({ signal }) => {
+      const { data, traceId } = await requestWithTrace<JobsPageData>(
+        `/api/export-jobs?${toQueryString(params)}`, { signal },
+      );
+      return { ...data, traceId };
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 }

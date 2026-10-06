@@ -15,6 +15,12 @@ export function useJobUpdates(): SsePhase {
   const [phase, setPhase] = useState<SsePhase>("idle");
 
   useEffect(() => {
+    // jsdom and a few embedded browsers do not expose EventSource. Keep the
+    // page usable there; supported browsers still use the full state machine.
+    if (typeof EventSource === "undefined") {
+      setPhase("degraded");
+      return;
+    }
     const connection = createSseConnection({
       url: `${API_BASE_URL}/api/events`,
       onEvent: (ev) => applyJobEventToCaches(queryClient, ev),
